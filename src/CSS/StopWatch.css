@@ -1,0 +1,41 @@
+.stopwatch-wrapper {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .time-display {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .primary,
+  .secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .primary {
+    background-color: #00e0ff;
+    color: #111;
+  }
+  
+  .secondary {
+    background-color: #444;
+    color: white;
+  }
+  
+  .laps {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  

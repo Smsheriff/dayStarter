@@ -1,21 +1,17 @@
-
-
 import React, { useEffect, useRef, useState } from "react";
 import "../CSS/Timer.css";
 
-const ScrollPicker = ({ values, onChange, type }) => {
+const ScrollPicker = ({ values, onChange, type, resetKey }) => {
   const containerRef = useRef(null);
   const ITEM_HEIGHT = 40;
- 
-  const MID_INDEX = Math.floor((values.length * 50)); 
-
-  const bigList = Array(100).fill(values).flat(); 
+  const MID_INDEX = Math.floor(values.length * 50);
+  const bigList = Array(100).fill(values).flat();
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = MID_INDEX * ITEM_HEIGHT;
     }
-  }, );
+  }, [resetKey]);
 
   const handleScroll = () => {
     const scrollTop = containerRef.current.scrollTop;
@@ -40,6 +36,7 @@ const ScrollPicker = ({ values, onChange, type }) => {
                 key={idx}
                 className="scroll-item"
                 style={{
+                  height: ITEM_HEIGHT,
                   fontSize: isSelected ? "28px" : "20px",
                   color: isSelected ? "#fff" : "#666",
                   fontWeight: isSelected ? "bold" : "normal",
@@ -61,13 +58,16 @@ const TimerPicker = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [timeLeft, setTimeLeft] = useState(null);
+  const [resetKey, setResetKey] = useState(0); 
   const timerRef = useRef(null);
 
   const startTimer = () => {
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
     if (totalSeconds === 0) return;
+
     setTimeLeft(totalSeconds);
     if (timerRef.current) clearInterval(timerRef.current);
+
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -82,6 +82,10 @@ const TimerPicker = () => {
   const resetTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     setTimeLeft(null);
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+    setResetKey((prev) => prev + 1);
   };
 
   const formatTime = (totalSec) => {
@@ -95,16 +99,30 @@ const TimerPicker = () => {
     <div className="timer-page">
       <h2>Set Timer</h2>
       <div className="picker-wrapper">
-        <ScrollPicker values={[...Array(100).keys()]} onChange={setHours} type="Hours" />
-        <ScrollPicker values={[...Array(60).keys()]} onChange={setMinutes} type="Minutes" />
-        <ScrollPicker values={[...Array(60).keys()]} onChange={setSeconds} type="Seconds" />
+        <ScrollPicker
+          values={[...Array(24).keys()]}
+          onChange={setHours}
+          type="Hours"
+          resetKey={resetKey}
+        />
+        <ScrollPicker
+          values={[...Array(60).keys()]}
+          onChange={setMinutes}
+          type="Minutes"
+          resetKey={resetKey}
+        />
+        <ScrollPicker
+          values={[...Array(60).keys()]}
+          onChange={setSeconds}
+          type="Seconds"
+          resetKey={resetKey}
+        />
       </div>
 
       <div className="selected-time">
         {timeLeft !== null
           ? formatTime(timeLeft)
           : `${String(hours).padStart(2, "0")} : ${String(minutes).padStart(2, "0")} : ${String(seconds).padStart(2, "0")}`}
-          
       </div>
 
       <div className="button-group">

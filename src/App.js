@@ -1,69 +1,46 @@
-import React, { useEffect, useState } from "react";
-import Alarm from "./Component/Alarm";
-import WorldClock from "./Component/WorldClock";
-import Stopwatch from "./Component/Stopwatch";
-import Timer from "./Component/Timer";
-import './CSS/Loader.css'
+import React from "react";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
 
 const tabIcons = {
-  Alarm: "⏰",
-  WorldClock: "🌍",
-  Stopwatch: "⏱",
-  Timer: "⌛",
+  "/": "⏰",
+  "/worldclock": "🌍",
+  "/stopwatch": "⏱",
+  "/timer": "⌛",
 };
 
 const tabTitles = {
-  Alarm: "⏰ Alarm",
-  Worldclock: "🌍 World Clock",
-  Stopwatch: "⏱ Stopwatch",
-  Timer: "⌛ Timer",
+  "/": "⏰ Alarm",
+  "/worldclock": "🌍 World Clock",
+  "/stopwatch": "⏱ Stopwatch",
+  "/timer": "⌛ Timer",
 };
 
 const App = () => {
-  const [tab, setTab] = useState("Alarm");
-  const [loader, setLoader] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoader(false);
-    }, 2000);
-  });
+  const location = useLocation();
+  const path = location.pathname;
+  const title = tabTitles[path] || "⏰ Alarm";
 
   return (
     <div className="container">
-      <h1>{tabTitles[tab]}</h1>
+      <h1>{title}</h1>
 
       <div className="main-content">
-        {tab === "Alarm" && <Alarm />}
-        {tab === "WorldClock" && <WorldClock />}
-        {tab === "Stopwatch" && <Stopwatch />}
-        {loader &&
-        <div className="main">
-          <div class="loader">
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          </div> 
-        }
-        {tab === "Timer" && <Timer />}
-        
+        <Outlet />
       </div>
 
       <div className="tabs">
-        {["Alarm", "WorldClock", "Stopwatch", "Timer"].map((t) => (
-          <button
-            key={t}
-            onClick={() => {
-              setTab(t);
-              setLoader(true)
-            }}
-            className={tab === t ? "active" : ""}
-          >
-            {tabIcons[t]} {t}
-          </button>
-        ))}
+        <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : "")}>
+          {tabIcons["/"]} Alarm
+        </NavLink>
+        <NavLink to="/worldclock" className={({ isActive }) => (isActive ? "active" : "")}>
+          {tabIcons["/worldclock"]} World Clock
+        </NavLink>
+        <NavLink to="/stopwatch" className={({ isActive }) => (isActive ? "active" : "")}>
+          {tabIcons["/stopwatch"]} Stopwatch
+        </NavLink>
+        <NavLink to="/timer" className={({ isActive }) => (isActive ? "active" : "")}>
+          {tabIcons["/timer"]} Timer
+        </NavLink>
       </div>
     </div>
   );
